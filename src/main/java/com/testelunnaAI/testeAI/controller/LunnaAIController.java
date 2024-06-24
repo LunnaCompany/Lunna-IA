@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/lunna-ia")
@@ -31,10 +33,16 @@ public class LunnaAIController {
     }
 
     @PostMapping("/chat")
-    public String chat(@RequestParam String question) throws IOException {
+    public Map<String, String> chat(@RequestParam String question) throws IOException {
         GenerateContentResponse generateContentResponse = this.generativeModel.generateContent(
                 ContentMaker.fromString(question)
         );
-        return ResponseHandler.getText(generateContentResponse);
+        String responseText = ResponseHandler.getText(generateContentResponse);
+
+        // Retorna um Map contendo o HTML
+        Map<String, String> response = new HashMap<>();
+        response.put("html", responseText);
+
+        return response;
     }
 }
